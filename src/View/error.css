@@ -1,0 +1,105 @@
+/*
+ * Error formatter for Laravel.
+ *
+ * @package   Peraleks\LaravelPrettyErrors
+ * @copyright 2017 Aleksey Perevoshchikov <aleksey.perevoshchikov.n@gmail.com>
+ * @license   https://github.com/peraleks/laravel-pretty-errors/blob/master/LICENSE.md MIT
+ * @link      https://github.com/peraleks/laravel-pretty-errors
+ *
+ */
+
+body {
+    background-color: #bbb;
+}
+.peraleks_error_box.WARNING, .peraleks_error_box.USER_WARNING,
+.peraleks_error_box.CORE_WARNING, .peraleks_error_box.COMPILE_WARNING {
+    background-color: #ffaa00;
+}
+
+.peraleks_error_box.ERROR, .peraleks_error_box.CORE_ERROR, .peraleks_error_box.COMPILE_ERROR,
+.peraleks_error_box.USER_ERROR, .peraleks_error_box.RECOVERABLE_ERROR, .peraleks_error_box.unknown
+{
+    background-color: #e02828;
+}
+
+.peraleks_error_box.ParseError
+{
+    background-color: #ba59bf;
+}
+
+.peraleks_error_box.NOTICE, .peraleks_error_box.USER_NOTICE
+{
+    background-color: #d8d800;
+}
+
+.peraleks_error_box.STRICT
+{
+    background-color: #8892BF;
+}
+
+.peraleks_error_box.DEPRECATED, .peraleks_error_box.USER_DEPRECATED
+{
+    background-color: #c48c00;
+}
+
+.peraleks_error_box {
+    font-family: Consolas, monospace;
+    text-align: left;
+    padding: 0.2em;
+    margin-left: 3px;
+    display: inline-block;
+    position: relative;
+}
+
+.peraleks_error_box .header {
+    padding: 0.15em 0.7em;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.peraleks_error_box .header span {
+    font-size: 80%;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.peraleks_error_box .text {
+    padding: 0.35em 0.65em;
+    font-size: 105%;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4), 0 0 1px #555;
+}
+
+.peraleks_error_box .file {
+    padding: 0.35em 0.65em;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #a6dbdb;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4), 0 0 1px #555;
+}
+
+.peraleks_error_box .bracket {
+    color: rgba(166, 219, 219, 0.3);
+}
+
+.peraleks_error_box  .but_trace {
+    font-weight: 500;
+    display: inline-block;
+    border-radius: 1em;
+    color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 0.05em 0.4em 0.2em;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+}
+
+.peraleks_error_box  .but_trace:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    cursor: pointer;
+}
+
+.peraleks_error_box .hidden {
+    display: none !important;
+}
+
+.peraleks_tw {
+    min-width: 100%;
+}

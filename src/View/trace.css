@@ -1,0 +1,270 @@
+/*
+ * Error formatter for Laravel.
+ *
+ * @package   Peraleks\LaravelPrettyErrors
+ * @copyright 2017 Aleksey Perevoshchikov <aleksey.perevoshchikov.n@gmail.com>
+ * @license   https://github.com/peraleks/laravel-pretty-errors/blob/master/LICENSE.md MIT
+ * @link      https://github.com/peraleks/laravel-pretty-errors
+ *
+ */
+
+.peraleks_tw > table {
+    font-size: 80%;
+    background-color: #444;
+    border-spacing: 0;
+    color: #eee;
+    width: 100%;
+}
+
+.peraleks_tw tr:hover {
+    background-color: #222 !important;
+}
+
+.peraleks_tw tr, .peraleks_tw td {
+    line-height: 1.8em;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+.peraleks_tw td {
+    white-space: nowrap;
+    text-align: center;
+    padding: 1px;
+}
+
+.peraleks_tw tr:nth-child(2n) {
+    background-color: #4d4d4d;
+}
+
+.peraleks_tw .trace_path {
+    text-align: right;
+    padding-left: 3px;
+    color: #00baba;
+}
+
+.peraleks_tw .trace_file {
+    text-align: left;
+    color: #a6dbdb;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+}
+
+.peraleks_tw span.illuminate {
+    color: rgba(160, 136, 136, 0.5);
+    /*text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);*/
+}
+
+.peraleks_tw span.illuminate:hover {
+    color: #f27979;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+}
+
+
+.peraleks_tw span.illuminate_space {
+    color: rgba(160, 136, 136, 0.5);
+}
+
+.peraleks_tw span.illuminate_space:hover {
+    color: #c6c6a7;
+}
+
+.peraleks_tw .trace_line {
+    color: #a6dbdb;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.peraleks_tw .trace_class {
+    text-align: left;
+    color: #ddd;
+    font-weight: 100;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4), 0 0 1px #000;
+}
+
+.peraleks_tw .trace_call_type {
+    color: #aaa;
+}
+
+.peraleks_tw .trace_name_space {
+    text-align: right;
+    color: #c6c6a7;
+}
+
+.peraleks_tw .trace_function {
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #ffdb70;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+    text-align: left;
+}
+
+.peraleks_tw .trace_function_params {
+    color: #888;
+    font-weight: bold;
+    padding-right: 5px;
+}
+
+.peraleks_tw .doc_wrap {
+    font-size: 115%;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 5;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.peraleks_tw .doc_window {
+    padding: 1em;
+    background-color: rgba(70, 70, 70, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.peraleks_tw .doc_data {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5), 0 0 1px #000;
+}
+
+.peraleks_tw .doc_text {
+    color: #8fc687;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow: auto;
+}
+
+.peraleks_tw span.doc {
+    color: #639b5d;
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
+}
+
+.peraleks_tw .doc_tag {
+    color: #29a815;
+}
+
+.peraleks_tw .doc_var {
+    color: #c18ddd;
+}
+
+.peraleks_tw .doc_type {
+    color: #ccc;
+}
+
+.peraleks_tw a {
+    text-decoration: none;
+}
+
+.peraleks_tw a.doc_href:link {
+    color: #68ace0;
+}
+
+.peraleks_tw a.doc_href:visited {
+    color: #68ace0;
+}
+
+.peraleks_tw a.doc_href:hover {
+    color: #a8cfed;
+}
+
+.peraleks_tw .trace_args {
+    border-left: 1px solid #393939;
+    padding-left: 3px;
+    padding-right: 3px;
+    color: #f9f9ca;
+}
+
+.peraleks_tw .trace_args.object {
+    color: #9cea9a;
+}
+
+.peraleks_tw .trace_args.resource {
+    color: #7e65ff;
+    font-style: italic;
+}
+
+.peraleks_tw .trace_args.array {
+    color: #bbcc00;
+    font-style: italic;
+}
+
+.peraleks_tw .trace_args.numeric {
+    color: #68ace0;
+}
+
+.peraleks_tw .string {
+    color: #81df73;
+}
+
+.peraleks_tw .string > span {
+    color: #888;
+    font-weight: bold;
+}
+
+.peraleks_tw .trace_args.callable {
+    color: #fff26b;
+    font-style: italic;
+}
+
+.peraleks_tw .trace_args.bool {
+    color: #fc9a46;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.peraleks_tw .trace_args .etc {
+    color: #f55;
+}
+
+/******************************************************************* tooltip */
+.peraleks_tw .tooltip_wrap {
+    font-family: Consolas, monospace;
+    border: 1px solid #666;
+    background-color: #4d4d4d;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+.peraleks_tw .tooltip_wrap table {
+    font-size: 100%;
+    font-style: normal;
+    border-spacing: 0;
+    color: #ccc;
+    width: 100%;
+    box-shadow: none;
+}
+
+.peraleks_tw .tooltip_wrap.string {
+    max-width: 50em;
+}
+
+.peraleks_tw .tooltip_wrap.string:hover {
+    background-color: #222;
+}
+
+.peraleks_tw .tooltip_wrap table tr:nth-child(2n) {
+    background-color: #444;
+}
+
+.peraleks_tw .tooltip_wrap td:nth-child(1) {
+    color: #c18ddd;
+    padding: 0 5px 0 10px;
+    text-align: right;
+}
+
+.peraleks_tw .tooltip_wrap td:nth-child(2) {
+    font-size: 100%;
+    padding: 0 10px 0 5px;
+    text-align: left;
+}
+
+
