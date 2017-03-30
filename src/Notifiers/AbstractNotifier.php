@@ -15,7 +15,6 @@ namespace Peraleks\LaravelPrettyErrors\Notifiers;
 
 use Peraleks\LaravelPrettyErrors\Core\ConfigObject;
 use Peraleks\LaravelPrettyErrors\Core\ErrorObject;
-use Peraleks\LaravelPrettyErrors\Exception\ErrorHandlerException;
 use Peraleks\LaravelPrettyErrors\Trace\FormatterInterface;
 
 /**
@@ -59,7 +58,7 @@ abstract class AbstractNotifier
     /**
      * Реализует и запускает шаблонный метод для уведомителей.
      *
-     * Возвращает флаг прерывания скрипта.
+     * Возвращает форматированный html с информацие об ошибке.
      *
      * @return string
      */
@@ -105,7 +104,7 @@ abstract class AbstractNotifier
      *
      * @param string $traceFormatterClass полное имя обработчика стека вызовов
      * @return string стек вызовов
-     * @throws ErrorHandlerException
+     * @throws \Exception
      */
     protected function TraceToString(string $traceFormatterClass): string
     {
@@ -121,8 +120,8 @@ abstract class AbstractNotifier
             $formatter = new $traceFormatterClass;
 
             if (!$formatter instanceof FormatterInterface) {
-                throw new ErrorHandlerException(
-                    $traceFormatterClass.' must implement '.FormatterInterface::class
+                throw new \Exception(
+                    'PrettyHandler: '.$traceFormatterClass.' must implement '.FormatterInterface::class
                 );
             }
 
@@ -136,7 +135,6 @@ abstract class AbstractNotifier
      *
      * Четвёртый этап шаблонного метода.<br>
      * Если стек вызовов не обрабатывался $trace будет равно пустой строке.<br>
-     * Возвращаемый результат будет записан в $this->finalStringError.
      *
      * @param string $trace стек вызовов
      * @return string окончателный результат обработки ошибки
@@ -144,14 +142,12 @@ abstract class AbstractNotifier
     abstract protected function ErrorToString(string $trace): string;
 
     /**
-     * Выполняет вывод подготовленной ошибки.
+     * Возвращает обработанную ошибку.
      *
      * Последний этап шаблонного метода.<br>
-     * Если хотите прервать выполнение скрипта даже если
-     * ошибка была не фатальной верните true.
      *
      * @param string $error форматированная ошибка
-     * @return string флаг прерывания скрипта
+     * @return string
      */
     abstract protected function notify(string $error): string;
 }

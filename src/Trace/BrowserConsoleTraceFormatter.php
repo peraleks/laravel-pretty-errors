@@ -34,7 +34,7 @@ class BrowserConsoleTraceFormatter extends AbstractTraceFormatter
      */
     protected function completion(array $traceArray): string
     {
-        $path = $this->configObject->getAppDir();
+        $path = $this->configObject->getBasePath();
         $trace = '';
         for ($i = 0, $c = count($traceArray); $i < $c; ++$i) {
             $v =& $traceArray[$i];

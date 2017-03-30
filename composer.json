@@ -1,0 +1,25 @@
+{
+    "name": "peraleks/laravel-pretty-errors",
+    "type": "library",
+    "description": "Error formatter for Laravel.",
+    "keywords": ["peraleks", "error-handler", "error", "handler", "debug",  "Laravel", "pretty-errors"
+    ],
+    "homepage": "https://github.com/peraleks/laravel-pretty-errors",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksey Perevoshchikov",
+            "email": "aleksey.perevoshchikov.n@gmail.com",
+            "homepage": "https://github.com/peraleks",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^7.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "Peraleks\\LaravelPrettyErrors\\": "src"
+        }
+    }
+}

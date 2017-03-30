@@ -9,6 +9,7 @@
  *
  */
 
+
 $development = [
 
     \Peraleks\LaravelPrettyErrors\Notifiers\HtmlNotifier::class => [
@@ -30,26 +31,23 @@ $development = [
     ],
 ];
 
+
+
 $production = [
 
     \Peraleks\LaravelPrettyErrors\Notifiers\ProductionNotifier::class => [
-        'enabled'     => true,
-        'includeFile' => '',
-        'timeFormat'  => 'o-m-d H:i:s',
+        'enabled' => true,
+        'file404' => '',
+        'file500' => '',
     ],
 ];
 
 
 
+
 if (config('app.debug')) {
-    $arr = $development;
+    return $development;
 } else {
-    $arr = $production;
+    return $production;
 }
-
-
-return [
-    'SELF_LOG_FILE'   => storage_path().'/logs/laravel.log',
-    'NOTIFIERS'       => $arr,
-];
 

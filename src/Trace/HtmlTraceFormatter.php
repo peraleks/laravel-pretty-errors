@@ -145,7 +145,7 @@ class HtmlTraceFormatter extends AbstractTraceFormatter
         $file = sprintf(static::FILE, '/'.array_pop($parts));
 
         /* получаем путь без имени файла относительно корня приложения  */
-        $path = preg_replace('#^'.$this->configObject->getAppDir().'#', '', implode('/', $parts));
+        $path = preg_replace('#^'.$this->configObject->getBasePath().'#', '', implode('/', $parts));
         if (0 !== preg_match('#^(/vendor/laravel/framework/src/)(Illuminate)(.+)$#', $path, $arr)) {
             $path = sprintf(static::ILLUM, $arr[1], $arr[2]).$arr[3];
         }

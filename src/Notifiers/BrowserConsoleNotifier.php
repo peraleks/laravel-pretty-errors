@@ -18,7 +18,7 @@ use Peraleks\LaravelPrettyErrors\Trace\BrowserConsoleTraceFormatter;
 /**
  * Class BrowserConsoleNotifier
  *
- * Форматирует и выводит ошибку в консоль браузера.
+ * Форматирует ошибку для отображения в консоли браузера.
  */
 class BrowserConsoleNotifier extends AbstractNotifier
 {
@@ -54,14 +54,6 @@ class BrowserConsoleNotifier extends AbstractNotifier
      * @var array
      */
     protected $codeColor;
-
-    /**
-     * Счётчик callbacks для отложенного показа ошибок.
-     * Используется для того, чтобы не регистрировать callback повторно.
-     *
-     * @var null|int
-     */
-    protected static $count;
 
     /**
      * Категория в консоли браузера.
@@ -145,7 +137,7 @@ class BrowserConsoleNotifier extends AbstractNotifier
 
         if ('' !== $trace) {
             if (!$this->configObject->get('phpNativeTrace')) {
-                $appDir = $this->configObject->getAppDir();
+                $appDir = $this->configObject->getBasePath();
                 $fullFile = $eObj->getFile();
                 $file = preg_replace('#^'.$appDir.'#', '', $fullFile);
                 $string .= $fullFile === $file ? '' : sprintf(static::MESSAGE, $cons, '('.$appDir.')');
@@ -160,11 +152,9 @@ class BrowserConsoleNotifier extends AbstractNotifier
 
 
     /**
-     * В зависимости от параметра 'deferredView' выводит сразу
-     * ошибку в браузер, или регистрирует callback для отложенного
-     * вывода.
+     * Возвращает форматированную ошибку.
      *
-     * @param string $error форматированная ошибка
+     * @param  string $error форматированная ошибка
      * @return string
      */
     protected function notify(string $error): string

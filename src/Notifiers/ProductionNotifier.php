@@ -13,41 +13,78 @@ declare(strict_types=1);
 
 namespace Peraleks\LaravelPrettyErrors\Notifiers;
 
+use Peraleks\LaravelPrettyErrors\Core\InnerErrorObject;
+use Peraleks\LaravelPrettyErrors\Core\SelfErrorLogger;
+use Peraleks\LaravelPrettyErrors\Exception\PrettyHandlerException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * Class ProductionNotifier
  *
- * Выводит в браузер страницу, уведомляющую пользователя
- * о том, что на сервере произошла ошибка.<br>
- * Так же отсылает соответствующие заголовки.<br>
- * Используется в режиме production.
+ * Подклучает пользовательский шаблон
+ * или файл возвращающий html-страницу ошибки 404 | 500.
+ * Если при подключении произошла ошибка, возвращается
+ * страница по умолчпнию.
  */
 class ProductionNotifier extends AbstractNotifier
 {
     /**
-     * Полное имя файла шаблона, который будет подключен
-     * если пользовательский файл не определён или в нём
-     * произошла ошибка.
+     * Полное имя файла шаблона страницы 404 или страницы ошибки сервера (500),
+     * который будет подключен, если пользовательский файл не определён
+     * или в нём произошла ошибка.
      *
      * @var string
      */
-    protected $defaultIncludeFile;
+    protected $defaultFile;
 
     /**
-     * Файл, который будет подключен в $this->notify().
-     * Файл должен выводить результат в буфер вывода.
-     * Файл не обязательно должен быть шаблоном.
+     * Файл, который будет подключен.
+     *
+     * Файл должен выводить результат в буфер вывода,
+     * или возвращать строку. Также может быть простым PHP-шаблоном.
+     *
+     * Например файл может содержать такой код:
+     *
+     * return view('404')->render();
+     *
+     * или
+     *
+     * echo view('404')->render();
      *
      * @var string
      */
-    protected $includeFile;
+    protected $file;
 
     /**
-     * Валидирует параметр конфигурации - 'header'.
+     * Содержит страницу ошибки по умолчанию, или null.
+     *
+     * Если не null значит произошла внутренняя ошибка.
+     *
+     * @var null|string
+     */
+    protected $defaultPage;
+
+    /**
+     * Определяет и валидирует имя файла,
+     * выводящего/возвращающего html-страницу ошибки ('500' или '404').
      */
     protected function before()
     {
-        $this->defaultIncludeFile = dirname(__DIR__).'/View/serverError500.php';
-        $this->includeFile = $this->validateIncludeFile($this->configObject->get('includeFile'));
+        if ((NotFoundHttpException::class === $this->errorObject->getType())
+            && (0 === strpos($this->errorObject->getMessage(), '404'))
+        ) {
+            $this->defaultFile = dirname(__DIR__).'/View/page404.php';
+            $this->file = $this->validateIncludeFile(
+                $this->configObject->get('file404'),
+                $this->defaultFile
+            );
+        } else {
+            $this->defaultFile = dirname(__DIR__).'/View/page500.php';
+            $this->file = $this->validateIncludeFile(
+                $this->configObject->get('file500'),
+                $this->defaultFile
+            );
+        }
     }
 
     /**
@@ -61,53 +98,110 @@ class ProductionNotifier extends AbstractNotifier
     }
 
     /**
-     * Валидирует имя файла для включения.
+     * Возвращает валидное имя файла для включения.
      *
-     * @param $file string имя файла из конфигурации
-     * @return string валидное имя файла для включения
+     * @param  string $file    имя файла из конфигурации
+     * @param  string $default имя файла по умолчанию
+     * @return string
      */
-    protected function validateIncludeFile($file): string
+    protected function validateIncludeFile($file, string $default): string
     {
         if ('' === $file || !is_string($file)) {
-            return $this->defaultIncludeFile;
+            return $default;
         }
         if (!file_exists($file)) {
-            trigger_error('ProductionNotifier: file '.$file.' not exist', E_USER_WARNING);
-            return $this->defaultIncludeFile;
+            $this->sendToLog(
+                new \Exception(
+                    'PrettyHandler: ProductionNotifier settings error: file '.$file.' not exist'
+                ));
+            return $default;
         }
         return $file;
     }
 
     /**
-     * Подключает файл, выводящий страницу ошибки.
-     * В нём будет доступен объект ошибки $errorObject.
+     * Возвращает страницу ошибки.
+     *
+     * Подключает файл, выводящий/возвращающий страницу ошибки.
+     * Если при подключении  происходит ошибка, отсылает её в лог.
      *
      * @param string $trace пустая строка
-     * @return string страница ошибки сервера
+     * @return string
      */
     protected function ErrorToString(string $trace): string
     {
-        $errorObject = $this->errorObject;
         ob_start();
         try {
-            include $this->includeFile;
+            set_error_handler([$this, 'error']);
+
+            $result = include $this->file;
+
         } catch (\Throwable $e) {
-            trigger_error($e->getMessage().' in '.$e->getFile().':'.$e->getLine(), E_USER_WARNING);
-            include $this->defaultIncludeFile;
+
+            $this->sendToLog($e);
+            include $this->defaultFile;
+
         } finally {
+
+            restore_error_handler();
+
+            if (isset($result) && is_string($result)) {
+                ob_end_clean();
+                return $result;
+            }
             return ob_get_clean();
         }
     }
 
     /**
-     * Отсылает заголовки и страницу ошибки сервера в браузер.
+     * Возвращает html-страницу ошибки.
      *
-     * @param string $error форматированная ошибка
+     * @param string $page страница ошибки
      * @return string
      */
-    protected function notify(string $error): string
+    protected function notify(string $page): string
     {
-        return $error;
+        /* Если произошла ошибка при подключении, возвращаем
+         * страницу по умолчанию */
+        if ($this->defaultPage) return $this->defaultPage;
+
+        return $page;
+    }
+
+    /**
+     * Обрабатывает внутренние ошибки сгенерированные при подключении
+     * файла в ErrorToString().
+     *
+     * Конвертирует ошибку в исключение. Генерирует страницу ошибки по умолчанию.
+     *
+     * @param int    $code    код ошибки
+     * @param string $message сообщение ошибки
+     * @param string $file    полное имя файла ошибки
+     * @param int    $line    номер строки
+     * @return bool true
+     */
+    public function error($code, $message, $file, $line)
+    {
+        $this->sendToLog(new \ErrorException($message, $code, $code, $file, $line));
+
+        if (!$this->defaultPage) {
+            ob_start();
+            include $this->defaultFile;
+            $this->defaultPage = ob_get_contents();
+        }
+
+        return true;
+    }
+
+    /**
+     * Отсылает исключения в логгер внутренних ошибок.
+     *
+     * @param \Throwable $e
+     */
+    protected function sendToLog(\Throwable $e)
+    {
+        SelfErrorLogger::log(new InnerErrorObject($e));
+
     }
 
 }

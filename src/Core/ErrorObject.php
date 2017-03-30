@@ -20,8 +20,7 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
  *
  * Объект ошибки. Является обёрткой над объектом \Throwable
  * и полностью повторяет его интерфейс. По средствам дополнителных методов
- * предоставляет название ошибки из её кода, а так же название функции-обработчика
- * через которую ошибка пришла. Производит сопоставление всех исключений с кодом E_ERROR,
+ * предоставляет название ошибки из её кода. Производит сопоставление всех исключений с кодом E_ERROR,
  * а ParseError c E_PARSE для более удобного управления при помощи битовой маски.
  */
 class ErrorObject
@@ -213,5 +212,22 @@ class ErrorObject
     public function __toString(): string
     {
         return (string)$this->e;
+    }
+
+    /**
+     * Конвертирует ошибку в \ErrorException
+     * для Illuminate\Foundation\Exceptions\ExceptionHandler::report()
+     *
+     * @return \ErrorException
+     */
+    public function getErrorException()
+    {
+        return new \ErrorException(
+            $this->getType().': (LaravelPrettyErrors) '.$this->getMessage(),
+            $this->getCode(),
+            $this->getCode(),
+            $this->getFile(),
+            $this->getLine()
+        );
     }
 }

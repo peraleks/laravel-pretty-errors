@@ -13,16 +13,13 @@ declare(strict_types=1);
 
 namespace Peraleks\LaravelPrettyErrors\Core;
 
-use Peraleks\LaravelPrettyErrors\Exception\ErrorHandlerException;
 use Peraleks\LaravelPrettyErrors\Notifiers\AbstractNotifier;
 
 /**
- * Class Helper
+ * Class PrettyHandler
  *
- * Помощник.
- * Здесь находится весь остальной функционал контроллера обработки ошибок,
- * который оказалось возможным вынести из ErrorHandler, для снижения оверхэда.<br>
- * Регистрирует функции для обработки внутренних ошибок.
+ * Основной контроллер. Инстанцирует объект конфигурации.
+ * Заускает процесс форматирования ошибки.
  */
 class PrettyHandler
 {
@@ -40,10 +37,15 @@ class PrettyHandler
      */
     private static $selfErrorHandler;
 
+    /**
+     * Html-страница сообщением о внутренней ошибке.
+     *
+     * @var string|null
+     */
     private static $selfError;
 
     /**
-     * Hendler constructor.
+     * PrettyHandler constructor.
      */
     private function __construct() {}
 
@@ -51,11 +53,10 @@ class PrettyHandler
     /**
      * Инстанцирует ConfigObject.
      *
-     * Вызов должен производится извне, а не из конструктора, так как
-     * фатальная ошибка в конфигурационном файле приведёт к тому,
-     * что Helper не будет инстанцирован.
+     * @param ErrorObject $e          объект ошибки
+     * @param null|mixed  $configFile полное имя файла конфигурации
      */
-    public static function createConfigObject(ErrorObject $e, string $configFile)
+    public static function createConfigObject(ErrorObject $e, $configFile = null)
     {
         try {
             set_error_handler([PrettyHandler::class, 'error']);
@@ -64,25 +65,22 @@ class PrettyHandler
 
         } catch (\Throwable $configError) {
             self::exception($e);
-            self::exception(new ErrorObject($configError));
+            self::exception(new InnerErrorObject($configError));
         } finally {
             restore_error_handler();
         }
     }
 
     /**
-     * Запускает обработку ошибки.
+     * Возвращает html-страницу c информацией об ошибке.
      *
      * Оборачивает объект ошибки в ErrorObject.
-     * Если не было ошибки в конфигурационном файле
-     * запускает механизм уведомления, иначе передает
-     * ErrorObject во внутренний обработчик ошибок.
      *
-     * @param \Throwable $e       объект ошибки
-     * @param string     $logType тип ошибки
-     * @return stirng
+     * @param \Throwable  $e          объект ошибки
+     * @param null|mixed  $configFile полное имя файла конфигурации
+     * @return string
      */
-    public static function format(\Throwable $e, string $configFile): string
+    public static function format(\Throwable $e, $configFile = null): string
     {
         $errorObject = new ErrorObject($e);
 
@@ -94,7 +92,7 @@ class PrettyHandler
     }
 
     /**
-     * Реализует механизм уведомления.
+     *  Возвращает html-страницу c информацией об ошибке.
      *
      * Инстанцирует классы уведомителей, которые определены в конфигурационных файлах.<br>
      * Класс уведомителя должен расширять AbstractNotifier.<br>
@@ -103,6 +101,7 @@ class PrettyHandler
      *
      * @param ErrorObject  $errorObject  объект ошибки (wrapper)
      * @param ConfigObject $configObject объект конфигурации
+     * @return string
      */
     private static function getHtml(ErrorObject $errorObject, ConfigObject $configObject): string
     {
@@ -112,8 +111,8 @@ class PrettyHandler
                 set_error_handler([PrettyHandler::class, 'error']);
 
                 if (!is_string($notifierClass)) {
-                    throw new ErrorHandlerException(
-                        'Notifiers name must be a string, '.gettype($notifierClass).' given'
+                    throw new \Exception(
+                        'PrettyHandler: notifiers name must be a string, '.gettype($notifierClass).' given'
                     );
                 }
                 $configObject->setNotifierClass($notifierClass);
@@ -135,7 +134,7 @@ class PrettyHandler
 
             } catch (\Throwable $e) {
                 self::exception($errorObject);
-                self::exception(new ErrorObject($e));
+                self::exception(new InnerErrorObject($e));
             } finally {
                 restore_error_handler();
             }
@@ -146,11 +145,10 @@ class PrettyHandler
         return $html;
     }
 
-
     /**
      * Обрабатывает внутренние ошибки.
      *
-     * Конвертирует ошибку в исключение и передает в $this->exception().
+     * Конвертирует ошибку в исключение и передает в self::exception().
      *
      * @param int    $code    код ошибки
      * @param string $message сообщение ошибки
@@ -160,7 +158,7 @@ class PrettyHandler
      */
     public static function error($code, $message, $file, $line)
     {
-        self::exception(new ErrorObject(new \ErrorException($message, $code, $code, $file, $line)));
+        self::exception(new InnerErrorObject(new \ErrorException($message, $code, $code, $file, $line)));
         return true;
     }
 

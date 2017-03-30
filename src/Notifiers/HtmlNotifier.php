@@ -18,7 +18,7 @@ use Peraleks\LaravelPrettyErrors\Trace\HtmlTraceFormatter;
 /**
  * Class HtmlNotifier
  *
- * Форматирует и выводит ошибку в браузер ввиде HTML.
+ * Форматирует ошибку ввиде HTML.
  */
 class HtmlNotifier extends AbstractNotifier
 {
@@ -44,21 +44,6 @@ class HtmlNotifier extends AbstractNotifier
     protected $errorTpl;
 
     /**
-     * Полное имя файла html-шаблона обёртки для отложенного показа ошибок.
-     *
-     * @var string
-     */
-    protected $wrapperTpl;
-
-    /**
-     * Счётчик callbacks для отложенного показа ошибок.
-     * Используется для того, чтобы не регистрировать callback повторно.
-     *
-     * @var null|int
-     */
-    protected static $count;
-
-    /**
      * Задаёт файлы шаблонов и css.
      *
      * @return void
@@ -69,7 +54,6 @@ class HtmlNotifier extends AbstractNotifier
         $this->errorCss   = $dir.'/error.css';
         $this->traceCss   = $dir.'/trace.css';
         $this->errorTpl   = $dir.'/error.tpl.php';
-        $this->wrapperTpl = $dir.'/wrapper.tpl.php';
     }
 
     /**
@@ -86,7 +70,7 @@ class HtmlNotifier extends AbstractNotifier
      * Возвращает форматированную ошибку ввиде HTML.
      *
      * @param string $trace стек вызовов
-     * @return string ошибка в формате HTML
+     * @return string
      */
     protected function ErrorToString(string $trace): string
     {
@@ -96,7 +80,7 @@ class HtmlNotifier extends AbstractNotifier
         $code     = $eObj->getCode();
         $type     = $eObj->getType();
         $message  = $eObj->getMessage();
-        $path     = $conf->getAppDir();
+        $path     = $conf->getBasePath();
         $file     = preg_replace('#^'.$path.'#', '', $eObj->getFile());
         $line     = $eObj->getLine();
         $fontSize = $conf->get('fontSize');
@@ -116,9 +100,7 @@ class HtmlNotifier extends AbstractNotifier
     }
 
     /**
-     * В зависимости от параметра 'deferredView' выводит сразу
-     * ошибку в браузер, или регистрирует callback для отложенного
-     * вывода.
+     * Возвращает форматированную ошибку.
      *
      * @param string $error форматированная ошибка
      * @return string
