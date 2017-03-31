@@ -21,6 +21,11 @@ Copy file **_vendor/peraleks/laravel-pretty-errors/src/Config/pretty-errors.php_
 
 Add code to **_App\Exceptions\Handler_** :
 ```php
+use Peraleks\LaravelPrettyErrors\Core\PrettyHandler;
+use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
+
     protected function convertExceptionToResponse(Exception $e)
     {
         $html = PrettyHandler::format($e, config_path('pretty-errors.php'));
