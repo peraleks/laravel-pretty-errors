@@ -15,7 +15,6 @@ namespace Peraleks\LaravelPrettyErrors\Notifiers;
 
 use Peraleks\LaravelPrettyErrors\Core\InnerErrorObject;
 use Peraleks\LaravelPrettyErrors\Core\SelfErrorLogger;
-use Peraleks\LaravelPrettyErrors\Exception\PrettyHandlerException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -45,11 +44,18 @@ class ProductionNotifier extends AbstractNotifier
      *
      * Например файл может содержать такой код:
      *
-     * return view('404')->render();
+     * return '<h2>Page not found</h2>;
      *
      * или
      *
      * echo view('404')->render();
+     *
+     *
+     * Если хотите подключить шаблон blade, просто задайте в файле настроек (pretty-errors.php):
+     *
+     * 'file404' => 'view.404'
+     *
+     * где '404' имя шаблона (404.blade.php).
      *
      * @var string
      */
@@ -63,6 +69,13 @@ class ProductionNotifier extends AbstractNotifier
      * @var null|string
      */
     protected $defaultPage;
+
+    /**
+     * Имя blade-шаблона.
+     *
+     * @var string
+     */
+    protected $view;
 
     /**
      * Определяет и валидирует имя файла,
@@ -109,10 +122,16 @@ class ProductionNotifier extends AbstractNotifier
         if ('' === $file || !is_string($file)) {
             return $default;
         }
+
+        if (0 !== preg_match('/^(view.)(.+)$/', $file, $m)) {
+            $this->view = $m[2];
+            return '';
+        }
+
         if (!file_exists($file)) {
             $this->sendToLog(
                 new \Exception(
-                    'PrettyHandler: ProductionNotifier settings error: file '.$file.' not exist'
+                    'ProductionNotifier settings error: file '.$file.' not exist'
                 ));
             return $default;
         }
@@ -134,7 +153,11 @@ class ProductionNotifier extends AbstractNotifier
         try {
             set_error_handler([$this, 'error']);
 
-            $result = include $this->file;
+            if ($this->view) {
+                $result = view($this->view)->render();
+            } else {
+                $result = include $this->file;
+            }
 
         } catch (\Throwable $e) {
 
