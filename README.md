@@ -19,7 +19,7 @@ $ composer require peraleks/laravel-pretty-errors
 Copy file **_vendor/peraleks/laravel-pretty-errors/src/Config/pretty-errors.php_** to Laravel config_path
 (**_app/config_**).
 
-Add code to **_App\Exceptions\Handler_**:
+Add code to **_App\Exceptions\Handler_** :
 ```php
     protected function convertExceptionToResponse(Exception $e)
     {
@@ -32,6 +32,7 @@ Add code to **_App\Exceptions\Handler_**:
 ```
 
 ## Configuration
+File **_pretty-errors.php_**
 
 ```php
 $development = [
@@ -67,7 +68,7 @@ $production = [
         /* For blade-template, name it as 'view.404' where '404' is the name for 404.blade.php .
          You can use native PHP template. To do this, enter the fully qualified file name.
           
-         The file may not be a template, but must return or print a string.<br>
+         The file may not be a template, but must return or print a string.
          For example, a file can contain such a code:
          
          return "<h2>Page not found</h2>";
