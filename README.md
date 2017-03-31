@@ -6,9 +6,9 @@ Error formatter for Laravel 5. Provides a convenient display as HTML-page and in
 Provides an enhanced view of the stack trace (viewing the contents of the arguments: **array**, **closure**, **resource**, **string**;
 and view **PHPDoc** classes and methods). Provides the opportunity to configure custom pages **404** and **500**.
 
-![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/master/1.png)
-![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/master/2.png)
-![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/master/3.png)
+![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/images/master/1.png)
+![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/images/master/2.png)
+![](https://raw.githubusercontent.com/peraleks/laravel-pretty-errors/images/master/3.png)
 
 ## Install
 ```bash
