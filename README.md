@@ -31,6 +31,55 @@ Add code to **_App\Exceptions\Handler_**:
     }
 ```
 
+## Configuration
+
+```php
+$development = [
+
+    \Peraleks\LaravelPrettyErrors\Notifiers\HtmlNotifier::class => [
+        'enabled'       => true,   // [bool] switch error display as html
+        'handleTrace'   => E_ALL,  // [int]  switch trace processing (bitwise mask)
+        'simpleTrace'   => true,   // [bool] switch display arguments in trace
+        'hideTrace'     => true,   // [bool] switch trace display on start
+        'fontSize'      => 15,     // [int]  main font size in pixels (works as a scale)
+        'stringLength'  => 80,     // [int]  line length in cells
+        'tooltipLength' => 1000,   // [int]  line length in extended view
+        'arrayLevel'    => 2,      // [int]  nesting level of arrays
+    ],
+
+    \Peraleks\LaravelPrettyErrors\Notifiers\BrowserConsoleNotifier::class => [
+        'enabled'        => true,  // [bool]   switch error display in browser console
+        'handleTrace'    => E_ALL, // [int]    switch trace processing (bitwise mask)
+        'phpNativeTrace' => true,  // [bool]   switch PHP native trace display 
+        'console'        => 'log', // [string] browser console section (error|warn|info|log|debug)
+    ],
+];
+
+
+
+$production = [
+
+    \Peraleks\LaravelPrettyErrors\Notifiers\ProductionNotifier::class => [
+        'enabled' => true,         // [bool]   switch error page display in production
+        'file404' => '',           // [string] fully qualified file name or blade-template name
+        'file500' => '',           // [string] fully qualified file name or blade-template name
+        
+        /* For blade-template, name it as 'view.404' where '404' is the name for 404.blade.php .
+         You can use native PHP template. To do this, enter the fully qualified file name.
+          
+         The file may not be a template, but must return or print a string.<br>
+         For example, a file can contain such a code:
+         
+         return "<h2>Page not found</h2>";
+         
+         or
+         
+         echo view('404')->render();
+         */
+    ],
+];
+```
+
 ## License
 
 The MIT License ([MIT](LICENSE.md)).
