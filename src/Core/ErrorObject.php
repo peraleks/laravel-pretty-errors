@@ -223,7 +223,7 @@ class ErrorObject
     public function getErrorException()
     {
         return new \ErrorException(
-            $this->getType().': (LaravelPrettyErrors) '.$this->getMessage(),
+            "\033[32mLaravelPrettyErrors\033[0m ".$this->getMessage(),
             $this->getCode(),
             $this->getCode(),
             $this->getFile(),

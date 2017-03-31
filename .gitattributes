@@ -8,3 +8,4 @@
 /tests              export-ignore
 /doc                export-ignore
 /build              export-ignore
+/images             export-ignore

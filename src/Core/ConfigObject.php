@@ -66,7 +66,7 @@ class ConfigObject
             );
         } elseif (!is_array($arr = include $file)) {
             throw new \Exception(
-                'PrettyHandler configuration file '.$file.' should return an array, '.gettype($arr).' given'
+                'Configuration file '.$file.' should return an array, '.gettype($arr).' given'
             );
         }
         $this->notifiers = $arr;

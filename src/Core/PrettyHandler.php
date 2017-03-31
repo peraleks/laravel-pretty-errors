@@ -112,7 +112,7 @@ class PrettyHandler
 
                 if (!is_string($notifierClass)) {
                     throw new \Exception(
-                        'PrettyHandler: notifiers name must be a string, '.gettype($notifierClass).' given'
+                        'Notifiers name must be a string, '.gettype($notifierClass).' given'
                     );
                 }
                 $configObject->setNotifierClass($notifierClass);
